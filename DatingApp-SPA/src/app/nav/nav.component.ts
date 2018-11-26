@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
 import { NgForm } from '@angular/forms';
+import { AlertifyService } from '../_services/alertify.service';
+
 
 @Component({
   selector: 'app-nav',
@@ -9,7 +11,7 @@ import { NgForm } from '@angular/forms';
 })
 export class NavComponent implements OnInit {
   model: any = {};
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private altertify: AlertifyService) { }
 
   // tslint:disable-next-line:no-trailing-whitespace
   ngOnInit() { 
@@ -17,20 +19,19 @@ export class NavComponent implements OnInit {
 
   login(form: NgForm) {
     this.authService.login(form.value).subscribe(next => {
-      console.log('Logged in successfully');
+      this.altertify.success('logged in sucessfully')
     }, error => {
-      console.log(error);
+      this.altertify.error(error);
     });
   }
 
   loggedIn() {
-    const token = localStorage.getItem('token');
-    return !!token;
+    return this.authService.loggedIn();
   }
 
   logout() {
     localStorage.removeItem('token');
-    console.log('logged out');
+    this.altertify.message('logged out');
   }
 
 }
